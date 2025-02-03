@@ -153,6 +153,18 @@ const Form = ({ onSubmit, onChange, formData, disabled, onAddItem, onRemoveItem,
 
   return (
     <FormContainer onSubmit={handleSubmit}>
+      <InputGroup>
+        <Label htmlFor="recipient">For (person/bedrift)</Label>
+        <Input
+          type="text"
+          id="recipient"
+          value={formData.recipient || ''}
+          onChange={(e) => onChange({ ...formData, recipient: e.target.value })}
+          placeholder="Skriv inn navn på person eller bedrift"
+          required
+        />
+      </InputGroup>
+
       <AddItemButton type="button" onClick={onAddItem}>
         + Add Item
       </AddItemButton>

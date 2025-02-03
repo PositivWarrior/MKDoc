@@ -32,6 +32,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold'
   },
+  subtitle: {
+    fontSize: 18,
+    color: '#2563eb',
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
   section: {
     margin: 10,
     padding: 10,
@@ -112,19 +118,23 @@ const styles = StyleSheet.create({
   }
 });
 
-const PDFPreview = ({ formData }) => {
+// Separate PDF Document component
+export const PDFDocument = ({ formData }) => {
   const calculateTotal = () => {
     return formData.items.reduce((total, item) => {
       return total + (parseFloat(item.price) || 0);
     }, 0);
   };
 
-  const PDFDocument = () => (
+  return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.contentWrapper}>
           <View style={styles.header}>
-            <Text style={styles.title}>Verdivurdering</Text>
+            <Text style={styles.title}>
+              Verdivurdering{'\n'}
+              <Text style={styles.subtitle}>for {formData.recipient || ''}</Text>
+            </Text>
           </View>
 
           {formData.items.map((item, index) => (
@@ -171,11 +181,13 @@ const PDFPreview = ({ formData }) => {
       </Page>
     </Document>
   );
+};
 
+const PDFPreview = ({ formData }) => {
   return (
     <PreviewContainer>
       <PDFViewer width="100%" height="100%">
-        <PDFDocument />
+        <PDFDocument formData={formData} />
       </PDFViewer>
     </PreviewContainer>
   );
