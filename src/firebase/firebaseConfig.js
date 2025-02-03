@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getStorage } from 'firebase/storage';
+import { getStorage, ref, listAll, getDownloadURL } from 'firebase/storage';
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -15,4 +15,27 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-export { storage }; 
+// Helper functions for storage operations
+export const listAllPDFs = async () => {
+  const storageRef = ref(storage, 'documents');
+  try {
+    const result = await listAll(storageRef);
+    const files = await Promise.all(
+      result.items.map(async (item) => {
+        const url = await getDownloadURL(item);
+        return {
+          name: item.name,
+          fullPath: item.fullPath,
+          url,
+          createdAt: item.name.split('-').pop().replace('.pdf', '') // Extract timestamp from filename
+        };
+      })
+    );
+    return files.sort((a, b) => b.createdAt - a.createdAt); // Sort by newest first
+  } catch (error) {
+    console.error('Error listing PDFs:', error);
+    throw error;
+  }
+};
+
+export { storage, ref, getDownloadURL }; 

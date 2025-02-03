@@ -7,6 +7,7 @@ import { storage } from './firebase/firebaseConfig'
 import Header from './components/Header'
 import Form from './components/Form'
 import PDFPreview, { PDFDocument } from './components/PDFPreview'
+import PDFList from './components/PDFList'
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -136,28 +137,42 @@ const App = () => {
       const pdfBlob = await generatePDF()
       
       if (shouldSendEmail) {
-        // Upload to Firebase only if sending email
+        // Upload to Firebase to get a shareable link
         const downloadURL = await uploadToFirebase(pdfBlob)
         
         // Calculate total with MVA
         const nettoTotal = formData.items.reduce((total, item) => total + (parseFloat(item.price) || 0), 0)
         const totalWithMVA = (nettoTotal * 1.25).toFixed(2)
         
-        // Create email content
+        // Create email content with itemized list
+        const itemsList = formData.items
+          .map(item => `${item.name}: ${Number(item.price).toFixed(2)} NOK`)
+          .join('\n');
+
         const subject = encodeURIComponent(`Verdivurdering for ${formData.recipient}`)
         const body = encodeURIComponent(`
-Her er verdivurdering for ${formData.recipient} på totalt ${totalWithMVA} NOK (inkl. MVA).
+Hei!
+
+Her er verdivurdering for ${formData.recipient}:
+
+${itemsList}
+
+Netto: ${nettoTotal.toFixed(2)} NOK
+MVA (25%): ${(nettoTotal * 0.25).toFixed(2)} NOK
+Totalt: ${totalWithMVA} NOK
 
 Last ned dokumentet her: ${downloadURL}
 
 Med vennlig hilsen,
 LukMeg
+Nordbybråten 16, 1592 Våler
+Tel: +47 998 54 333
         `)
         
         // Open Gmail compose window
         window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`, '_blank')
       } else {
-        // For direct download, use the blob URL instead of Firebase
+        // For direct download, use the blob URL
         const blobUrl = URL.createObjectURL(pdfBlob)
         const link = document.createElement('a')
         link.href = blobUrl
@@ -165,7 +180,7 @@ LukMeg
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
-        URL.revokeObjectURL(blobUrl) // Clean up the blob URL
+        URL.revokeObjectURL(blobUrl)
       }
     } catch (error) {
       console.error('Operation failed:', error)
@@ -191,6 +206,7 @@ LukMeg
           />
           <PDFPreview formData={formData} />
         </div>
+        <PDFList />
       </MainContent>
     </AppContainer>
   )
