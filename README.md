@@ -1,14 +1,48 @@
-# MKDoc - PDF Document Generator
+# LukMeg Verdivurdering
 
-A React application for creating and managing PDF documents with live preview, Firebase storage integration, and email notifications.
+A web application for generating value assessment PDFs and sending them via email.
 
 ## Features
 
-- Create PDF documents with a user-friendly form interface
-- Live PDF preview as you type
-- Upload generated PDFs to Firebase Storage
-- Send email notifications with download links
-- Modern and responsive UI
+- Create value assessments with multiple items
+- Generate PDF documents
+- Send assessments via email
+- View previous assessments
+- Responsive design
+
+## Tech Stack
+
+- React
+- Vite
+- Tailwind CSS
+- Firebase Storage
+- PDF Generation with @react-pdf/renderer
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Environment Variables
+
+Create a `.env` file with the following variables:
+
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
 
 ## Prerequisites
 
@@ -48,22 +82,6 @@ npm install
 
 ```bash
 cp .env.example .env
-```
-
-## Development
-
-Run the development server:
-
-```bash
-npm run dev
-```
-
-The application will be available at `http://localhost:5173`
-
-## Building for Production
-
-```bash
-npm run build
 ```
 
 ## Usage

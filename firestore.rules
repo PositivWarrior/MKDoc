@@ -1,0 +1,38 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Reviews collection
+    match /reviews/{reviewId} {
+      // Anyone can read reviews
+      allow read: if true;
+      
+      // Anyone can create reviews, but they must be valid
+      allow create: if isValidReview();
+      
+      // No one can delete reviews
+      allow delete: if false;
+      
+      // No updates to reviews
+      allow update: if false;
+    }
+
+    // Validation function for review data
+    function isValidReview() {
+      let review = request.resource.data;
+      return review.keys().hasAll(['name', 'rating', 'comment', 'createdAt'])
+        && review.name is string
+        && review.name.size() > 0
+        && review.name.size() <= 100
+        && review.rating is number
+        && review.rating >= 1
+        && review.rating <= 5
+        && review.comment is string
+        && review.comment.size() <= 500
+        && review.createdAt is timestamp
+        && review.createdAt <= request.time
+        // Prevent spam by limiting request rate
+        && request.time > resource.data.createdAt + duration.value(10, 's');
+    }
+  }
+} 
