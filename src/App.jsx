@@ -148,29 +148,29 @@ Tel: +47 998 54 333
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 flex flex-col w-full">
       <Header />
-      <main className="w-full max-w-full p-4 sm:p-6 lg:p-8">
-        <div className="grid grid-cols-1 gap-4 max-w-[2000px] mx-auto 
-          sm:grid-cols-2 sm:gap-6
-          xl:grid-cols-[40%_35%_25%] xl:gap-8">
-          <Form
-            formData={formData}
-            onChange={handleFormChange}
-            onSubmit={handleSubmit}
-            disabled={loading}
-            onAddItem={addItem}
-            onRemoveItem={removeItem}
-            onUpdateItem={updateItem}
-            className="sm:col-span-2 xl:col-span-1"
-          />
-          <PDFPreview 
-            formData={formData}
-            className="sm:col-span-1"
-          />
-          <PDFList 
-            className="sm:col-span-1"
-          />
+      <main className="flex-1 w-full px-4 py-6 md:px-6 lg:px-8">
+        <div className="max-w-[1920px] mx-auto">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
+            <div className="w-full flex justify-center">
+              <Form
+                formData={formData}
+                onChange={handleFormChange}
+                onSubmit={handleSubmit}
+                disabled={loading}
+                onAddItem={addItem}
+                onRemoveItem={removeItem}
+                onUpdateItem={updateItem}
+              />
+            </div>
+            <div className="w-full">
+              <PDFPreview formData={formData} />
+            </div>
+            <div className="w-full overflow-hidden">
+              <PDFList />
+            </div>
+          </div>
         </div>
       </main>
     </div>
