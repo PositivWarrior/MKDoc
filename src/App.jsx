@@ -14,39 +14,36 @@ const AppContainer = styled.div`
   background-color: #f8fafc;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
 `
 
 const MainContent = styled.main`
   width: 100%;
-  max-width: 1400px;
+  max-width: 1920px;
   margin: 0 auto;
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
 
   .content-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    width: 100%;
-    justify-content: center;
+    grid-template-columns: 5fr 4fr 3fr;
+    gap: 2rem;
     align-items: start;
-    max-width: 1200px;
-    margin: 0 auto;
+
+    > * {
+      position: sticky;
+      top: 2rem;
+    }
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1280px) {
     padding: 1rem;
     
     .content-grid {
       grid-template-columns: 1fr;
-      max-width: 800px;
       gap: 2rem;
+
+      > * {
+        position: static;
+      }
     }
   }
 `
@@ -205,8 +202,8 @@ Tel: +47 998 54 333
             onUpdateItem={updateItem}
           />
           <PDFPreview formData={formData} />
+          <PDFList />
         </div>
-        <PDFList />
       </MainContent>
     </AppContainer>
   )
