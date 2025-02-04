@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import styled from 'styled-components'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { pdf } from '@react-pdf/renderer'
 
@@ -8,45 +7,6 @@ import Header from './components/Header'
 import Form from './components/Form'
 import PDFPreview, { PDFDocument } from './components/PDFPreview'
 import PDFList from './components/PDFList'
-
-const AppContainer = styled.div`
-  min-height: 100vh;
-  background-color: #f8fafc;
-  display: flex;
-  flex-direction: column;
-`
-
-const MainContent = styled.main`
-  width: 100%;
-  max-width: 1920px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  .content-grid {
-    display: grid;
-    grid-template-columns: 5fr 4fr 3fr;
-    gap: 2rem;
-    align-items: start;
-
-    > * {
-      position: sticky;
-      top: 2rem;
-    }
-  }
-
-  @media (max-width: 1280px) {
-    padding: 1rem;
-    
-    .content-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-
-      > * {
-        position: static;
-      }
-    }
-  }
-`
 
 const App = () => {
   const [formData, setFormData] = useState(() => {
@@ -188,10 +148,12 @@ Tel: +47 998 54 333
   }
 
   return (
-    <AppContainer>
+    <div className="min-h-screen bg-slate-50 flex flex-col w-full max-w-full overflow-x-hidden">
       <Header />
-      <MainContent>
-        <div className="content-grid">
+      <main className="w-full max-w-full p-4 sm:p-6 lg:p-8">
+        <div className="grid grid-cols-1 gap-4 max-w-[2000px] mx-auto 
+          sm:grid-cols-2 sm:gap-6
+          xl:grid-cols-[40%_35%_25%] xl:gap-8">
           <Form
             formData={formData}
             onChange={handleFormChange}
@@ -200,12 +162,18 @@ Tel: +47 998 54 333
             onAddItem={addItem}
             onRemoveItem={removeItem}
             onUpdateItem={updateItem}
+            className="sm:col-span-2 xl:col-span-1"
           />
-          <PDFPreview formData={formData} />
-          <PDFList />
+          <PDFPreview 
+            formData={formData}
+            className="sm:col-span-1"
+          />
+          <PDFList 
+            className="sm:col-span-1"
+          />
         </div>
-      </MainContent>
-    </AppContainer>
+      </main>
+    </div>
   )
 }
 
