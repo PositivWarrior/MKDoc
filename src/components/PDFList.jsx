@@ -1,64 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { listAllPDFs } from '../firebase/firebaseConfig';
-
-const Container = styled.div`
-  margin-top: 2rem;
-  width: 100%;
-  max-width: 800px;
-`;
-
-const Title = styled.h2`
-  color: #2563eb;
-  margin-bottom: 1rem;
-`;
-
-const List = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-const PDFItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
-
-const PDFInfo = styled.div`
-  flex: 1;
-`;
-
-const PDFName = styled.h3`
-  margin: 0;
-  color: #374151;
-  font-size: 1rem;
-`;
-
-const PDFDate = styled.p`
-  margin: 0.25rem 0 0;
-  color: #6b7280;
-  font-size: 0.875rem;
-`;
-
-const Button = styled.a`
-  padding: 0.5rem 1rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 0.875rem;
-  
-  &:hover {
-    background-color: #1d4ed8;
-  }
-`;
 
 const PDFList = () => {
   const [pdfs, setPdfs] = useState([]);
@@ -90,26 +31,40 @@ const PDFList = () => {
   };
 
   if (loading) {
-    return <Container>Loading...</Container>;
+    return <div className="w-full">Loading...</div>;
   }
 
   return (
-    <Container>
-      <Title>Tidligere verdivurderinger</Title>
-      <List>
+    <div className="w-full">
+      <h2 className="text-blue-600 mb-4 text-xl font-semibold">
+        Tidligere verdivurderinger
+      </h2>
+      <div className="flex flex-col gap-4">
         {pdfs.map((pdf) => (
-          <PDFItem key={pdf.fullPath}>
-            <PDFInfo>
-              <PDFName>{pdf.name.split('-')[1]}</PDFName>
-              <PDFDate>{formatDate(pdf.createdAt)}</PDFDate>
-            </PDFInfo>
-            <Button href={pdf.url} target="_blank" rel="noopener noreferrer">
+          <div 
+            key={pdf.fullPath} 
+            className="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm"
+          >
+            <div className="flex-1">
+              <h3 className="m-0 text-gray-700 text-base font-medium">
+                {pdf.name.split('-')[1]}
+              </h3>
+              <p className="mt-1 text-gray-500 text-sm">
+                {formatDate(pdf.createdAt)}
+              </p>
+            </div>
+            <a 
+              href={pdf.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition-colors"
+            >
               Åpne PDF
-            </Button>
-          </PDFItem>
+            </a>
+          </div>
         ))}
-      </List>
-    </Container>
+      </div>
+    </div>
   );
 };
 

@@ -1,139 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const FormContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 2rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px;
-`;
-
-const ItemContainer = styled.div`
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  position: relative;
-`;
-
-const ItemHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-`;
-
-const ItemTitle = styled.h3`
-  margin: 0;
-  font-size: 1.1rem;
-  color: #374151;
-`;
-
-const RemoveButton = styled.button`
-  background: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  
-  &:hover {
-    background: #dc2626;
-  }
-`;
-
-const AddItemButton = styled.button`
-  background: #10b981;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.75rem;
-  cursor: pointer;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  
-  &:hover {
-    background: #059669;
-  }
-`;
-
-const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  font-weight: 600;
-  color: #333;
-`;
-
-const Input = styled.input`
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  &:focus {
-    outline: none;
-    border-color: #2563eb;
-  }
-`;
-
-const TextArea = styled.textarea`
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  min-height: 100px;
-  resize: vertical;
-  &:focus {
-    outline: none;
-    border-color: #2563eb;
-  }
-`;
-
-const TotalPrice = styled.div`
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 2px solid #e5e7eb;
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #2563eb;
-  text-align: right;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-`;
-
-const Button = styled.button`
-  padding: 0.75rem 1.5rem;
-  background-color: ${props => props.variant === 'secondary' ? '#4f46e5' : '#2563eb'};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  flex: 1;
-  
-  &:hover {
-    background-color: ${props => props.variant === 'secondary' ? '#4338ca' : '#1d4ed8'};
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-`;
 
 const Form = ({ onSubmit, onChange, formData, disabled, onAddItem, onRemoveItem, onUpdateItem }) => {
   const handleSubmit = (e) => {
@@ -152,49 +17,62 @@ const Form = ({ onSubmit, onChange, formData, disabled, onAddItem, onRemoveItem,
   };
 
   return (
-    <FormContainer onSubmit={handleSubmit}>
-      <InputGroup>
-        <Label htmlFor="recipient">For (person/bedrift)</Label>
-        <Input
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-8 bg-white rounded-lg shadow-sm w-full max-w-[500px]">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="recipient" className="font-semibold text-gray-700">
+          For (person/bedrift)
+        </label>
+        <input
           type="text"
           id="recipient"
           value={formData.recipient || ''}
           onChange={(e) => onChange({ ...formData, recipient: e.target.value })}
           placeholder="Skriv inn navn på person eller bedrift"
           required
+          className="p-3 border border-gray-200 rounded-md text-base focus:outline-none focus:border-blue-600"
         />
-      </InputGroup>
+      </div>
 
-      <AddItemButton type="button" onClick={onAddItem}>
+      <button 
+        type="button" 
+        onClick={onAddItem}
+        className="bg-emerald-500 text-white border-none rounded-md py-3 cursor-pointer font-semibold mb-4 hover:bg-emerald-600 transition-colors"
+      >
         + Add Item
-      </AddItemButton>
+      </button>
 
       {formData.items.map((item, index) => (
-        <ItemContainer key={item.id}>
-          <ItemHeader>
-            <ItemTitle>Item {index + 1}</ItemTitle>
-            <RemoveButton
+        <div key={item.id} className="border border-gray-200 rounded-lg p-4 mb-4 relative">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="m-0 text-lg text-gray-700">Item {index + 1}</h3>
+            <button
               type="button"
               onClick={() => onRemoveItem(item.id)}
+              className="bg-red-500 text-white border-none rounded-md p-2 text-sm cursor-pointer hover:bg-red-600 transition-colors"
             >
               Remove
-            </RemoveButton>
-          </ItemHeader>
+            </button>
+          </div>
 
-          <InputGroup>
-            <Label htmlFor={`name-${item.id}`}>Tittel</Label>
-            <Input
+          <div className="flex flex-col gap-2">
+            <label htmlFor={`name-${item.id}`} className="font-semibold text-gray-700">
+              Tittel
+            </label>
+            <input
               type="text"
               id={`name-${item.id}`}
               value={item.name}
               onChange={(e) => handleItemChange(item.id, 'name', e.target.value)}
               required
+              className="p-3 border border-gray-200 rounded-md text-base focus:outline-none focus:border-blue-600"
             />
-          </InputGroup>
+          </div>
 
-          <InputGroup>
-            <Label htmlFor={`price-${item.id}`}>Pris (NOK)</Label>
-            <Input
+          <div className="flex flex-col gap-2 mt-4">
+            <label htmlFor={`price-${item.id}`} className="font-semibold text-gray-700">
+              Pris (NOK)
+            </label>
+            <input
               type="number"
               id={`price-${item.id}`}
               value={item.price}
@@ -203,43 +81,51 @@ const Form = ({ onSubmit, onChange, formData, disabled, onAddItem, onRemoveItem,
               step="0.01"
               min="0"
               placeholder="0.00"
+              className="p-3 border border-gray-200 rounded-md text-base focus:outline-none focus:border-blue-600"
             />
-          </InputGroup>
+          </div>
 
-          <InputGroup>
-            <Label htmlFor={`description-${item.id}`}>Beskrivelse</Label>
-            <TextArea
+          <div className="flex flex-col gap-2 mt-4">
+            <label htmlFor={`description-${item.id}`} className="font-semibold text-gray-700">
+              Beskrivelse
+            </label>
+            <textarea
               id={`description-${item.id}`}
               value={item.description}
               onChange={(e) => handleItemChange(item.id, 'description', e.target.value)}
               required
+              className="p-3 border border-gray-200 rounded-md text-base min-h-[100px] resize-y focus:outline-none focus:border-blue-600"
             />
-          </InputGroup>
-        </ItemContainer>
+          </div>
+        </div>
       ))}
 
-      <TotalPrice>
+      <div className="mt-4 pt-4 border-t-2 border-gray-200 font-semibold text-lg text-blue-600 text-right">
         Netto: {calculateTotal().toFixed(2)} NOK
         <br />
         + MVA: {(calculateTotal() * 0.25).toFixed(2)} NOK
         <br />
         Total: {(calculateTotal() * 1.25).toFixed(2)} NOK
-      </TotalPrice>
+      </div>
 
-      <ButtonGroup>
-        <Button type="submit" disabled={disabled}>
+      <div className="flex gap-4 mt-4">
+        <button 
+          type="submit" 
+          disabled={disabled}
+          className="flex-1 py-3 px-6 bg-blue-600 text-white border-none rounded-md font-semibold cursor-pointer transition-colors hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed"
+        >
           Generate PDF
-        </Button>
-        <Button 
-          type="button" 
-          variant="secondary" 
+        </button>
+        <button 
+          type="button"
           disabled={disabled}
           onClick={() => onSubmit(formData, true)}
+          className="flex-1 py-3 px-6 bg-indigo-600 text-white border-none rounded-md font-semibold cursor-pointer transition-colors hover:bg-indigo-700 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           Send Email
-        </Button>
-      </ButtonGroup>
-    </FormContainer>
+        </button>
+      </div>
+    </form>
   );
 };
 

@@ -1,15 +1,5 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer';
-import styled from 'styled-components';
-
-const PreviewContainer = styled.div`
-  width: 100%;
-  max-width: 800px;
-  height: 800px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
 
 // PDF styles
 const styles = StyleSheet.create({
@@ -185,11 +175,13 @@ export const PDFDocument = ({ formData }) => {
 
 const PDFPreview = ({ formData }) => {
   return (
-    <PreviewContainer>
-      <PDFViewer width="100%" height="100%">
-        <PDFDocument formData={formData} />
-      </PDFViewer>
-    </PreviewContainer>
+    <div className="w-full bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="w-full aspect-[1/1.4142] max-h-[800px]">
+        <PDFViewer className="w-full h-full border-0">
+          <PDFDocument formData={formData} />
+        </PDFViewer>
+      </div>
+    </div>
   );
 };
 
