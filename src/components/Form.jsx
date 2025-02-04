@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 
 const Form = ({ onSubmit, onChange, formData, disabled, onAddItem, onRemoveItem, onUpdateItem }) => {
   const handleSubmit = (e) => {
@@ -127,6 +127,24 @@ const Form = ({ onSubmit, onChange, formData, disabled, onAddItem, onRemoveItem,
       </div>
     </form>
   );
+};
+
+Form.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  formData: PropTypes.shape({
+    recipient: PropTypes.string,
+    items: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      price: PropTypes.string,
+      description: PropTypes.string
+    }))
+  }).isRequired,
+  disabled: PropTypes.bool,
+  onAddItem: PropTypes.func.isRequired,
+  onRemoveItem: PropTypes.func.isRequired,
+  onUpdateItem: PropTypes.func.isRequired
 };
 
 export default Form; 
