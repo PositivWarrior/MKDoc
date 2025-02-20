@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getStorage, ref, listAll, getDownloadURL } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -12,8 +13,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const storage = getStorage(app);
 
 // Helper functions for storage operations
 export const listAllPDFs = async () => {
@@ -38,4 +40,4 @@ export const listAllPDFs = async () => {
   }
 };
 
-export { storage, ref, getDownloadURL }; 
+export { ref, getDownloadURL }; 

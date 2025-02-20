@@ -1,7 +1,8 @@
 import { Menu, X, Phone, Mail } from 'lucide-react';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
-const Header = () => {
+const Header = ({ user, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -30,6 +31,32 @@ const Header = () => {
               <span>lukmegnorge@gmail.com</span>
             </a>
           </nav>
+
+          {/* User Info and Logout Button */}
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              {user.photoURL ? (
+                <img 
+                  src={user.photoURL} 
+                  alt={user.displayName || 'User'} 
+                  className="w-8 h-8 rounded-full"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                  <span className="text-gray-600 text-sm">
+                    {user.displayName ? user.displayName[0].toUpperCase() : 'U'}
+                  </span>
+                </div>
+              )}
+              <span className="text-gray-700">{user.displayName || user.email}</span>
+            </div>
+            <button
+              onClick={onLogout}
+              className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </div>
 
           {/* Mobile Menu Button */}
           <button 
@@ -64,6 +91,11 @@ const Header = () => {
       </div>
     </header>
   );
+};
+
+Header.propTypes = {
+  user: PropTypes.object.isRequired,
+  onLogout: PropTypes.func.isRequired,
 };
 
 export default Header; 

@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@firebase/auth": "^1.9.0",
     "@radix-ui/react-label": "^2.1.1",
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.1",
     "@react-pdf/renderer": "^4.1.6",
+    "axios": "^1.7.9",
     "emailjs-com": "^3.2.0",
-    "firebase": "^11.2.0",
+    "firebase": "^11.3.1",
     "lucide-react": "^0.474.0",
     "pdf-lib": "^1.17.1",
     "prop-types": "^15.8.1",

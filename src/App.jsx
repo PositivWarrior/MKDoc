@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { pdf } from '@react-pdf/renderer'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 import { storage } from './firebase/firebaseConfig'
 import Header from './components/Header'
 import Form from './components/Form'
 import PDFPreview, { PDFDocument } from './components/PDFPreview'
 import PDFList from './components/PDFList'
+import Login from './components/Login'
+import { logOut } from './services/authService'
 
 const App = () => {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState(() => {
     const savedData = localStorage.getItem('formData')
     return savedData ? JSON.parse(savedData) : {
@@ -23,10 +28,27 @@ const App = () => {
   })
 
   useEffect(() => {
+    const auth = getAuth()
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user)
+      setLoading(false)
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
     localStorage.setItem('formData', JSON.stringify(formData))
   }, [formData])
 
-  const [loading, setLoading] = useState(false)
+  const handleLogout = async () => {
+    try {
+      await logOut()
+      setUser(null)
+    } catch (error) {
+      console.error('Error logging out:', error)
+    }
+  }
 
   const handleFormChange = (newData) => {
     setFormData(newData)
@@ -147,9 +169,24 @@ Tel: +47 998 54 333
     }
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return <Login onLogin={setUser} />
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col w-full">
-      <Header />
+    <div className="min-h-screen bg-gray-50">
+      <Header 
+        user={user} 
+        onLogout={handleLogout}
+      />
       <main className="flex-1 w-full px-4 py-6 md:px-6 lg:px-8">
         <div className="max-w-[1920px] mx-auto">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">

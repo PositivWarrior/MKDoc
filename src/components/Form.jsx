@@ -1,9 +1,54 @@
 import PropTypes from 'prop-types';
+import { sendEmailWithAttachment } from '../services/emailService';
+import { useState } from 'react';
 
 const Form = ({ onSubmit, onChange, formData, disabled, onAddItem, onRemoveItem, onUpdateItem }) => {
-  const handleSubmit = (e) => {
+  const [recipientEmail, setRecipientEmail] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    try {
+      // Generate PDF first
+      const pdfData = await onSubmit(formData);
+      
+      // Calculate totals for email body
+      const nettoTotal = formData.items.reduce((total, item) => total + (parseFloat(item.price) || 0), 0);
+      const mva = nettoTotal * 0.25;
+      const totalWithMVA = nettoTotal + mva;
+
+      // Create itemized list
+      const itemsList = formData.items
+        .map(item => `${item.name}: ${Number(item.price).toFixed(2)} NOK`)
+        .join('\n');
+
+      // Prepare email content
+      const subject = encodeURIComponent(`Verdivurdering for ${formData.recipient}`);
+      const body = encodeURIComponent(`
+Hei!
+
+Her er verdivurdering for ${formData.recipient}:
+
+${itemsList}
+
+Netto: ${nettoTotal.toFixed(2)} NOK
+MVA (25%): ${mva.toFixed(2)} NOK
+Totalt: ${totalWithMVA.toFixed(2)} NOK
+
+Med vennlig hilsen,
+LukMeg
+Nordbybråten 16, 1592 Våler
+Tel: +47 998 54 333
+      `);
+
+      // Open Gmail compose in new window
+      window.open(
+        `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${encodeURIComponent(recipientEmail)}&su=${subject}&body=${body}`,
+        '_blank'
+      );
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to process the request. Please try again.');
+    }
   };
 
   const handleItemChange = (itemId, field, value) => {
@@ -28,6 +73,21 @@ const Form = ({ onSubmit, onChange, formData, disabled, onAddItem, onRemoveItem,
           value={formData.recipient || ''}
           onChange={(e) => onChange({ ...formData, recipient: e.target.value })}
           placeholder="Skriv inn navn på person eller bedrift"
+          required
+          className="p-3 border border-gray-200 rounded-md text-base focus:outline-none focus:border-blue-600"
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="recipientEmail" className="font-semibold text-gray-700">
+          Mottakers e-post
+        </label>
+        <input
+          type="email"
+          id="recipientEmail"
+          value={recipientEmail}
+          onChange={(e) => setRecipientEmail(e.target.value)}
+          placeholder="skriv inn e-postadresse"
           required
           className="p-3 border border-gray-200 rounded-md text-base focus:outline-none focus:border-blue-600"
         />
@@ -118,8 +178,8 @@ const Form = ({ onSubmit, onChange, formData, disabled, onAddItem, onRemoveItem,
         </button>
         <button 
           type="button"
-          disabled={disabled}
-          onClick={() => onSubmit(formData, true)}
+          disabled={disabled || !recipientEmail}
+          onClick={handleSubmit}
           className="flex-1 py-3 px-6 bg-indigo-600 text-white border-none rounded-md font-semibold cursor-pointer transition-colors hover:bg-indigo-700 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           Send Email
